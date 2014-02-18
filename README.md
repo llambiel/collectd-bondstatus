@@ -1,4 +1,4 @@
-collectd-cloudstack
+collectd-bondstatus
 ================
 This is a python plugin for collecting NIC bond status
 .
