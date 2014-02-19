@@ -1,10 +1,10 @@
 collectd-bondstatus
 ================
-This is a python plugin for collecting NIC bond status
-.
+This is a python plugin for collecting NIC bond status.
+
 It requires the python plugin in collectd in order to gather data.
 
-The script detects and monitor bonds with names bond0 to bond10. It assumes there's 2 NICs in a given bond.
+The script detects and monitor all bonds. It assumes there's 2 NICs in a given bond.
 
 It checks the number of NICs in the bond as well as the MII status of the bond itself and all NICs.
 
