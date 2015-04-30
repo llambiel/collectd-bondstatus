@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#Author: Loic Lambiel, exoscale
-#This is a collectd python script to detect bondings status. any MII state other than "up" will be reported as failed. We expect 2 NICs with "up" status in our bond.
+# Author: Loic Lambiel, exoscale
+# This is a collectd python script to detect bondings status. any MII state other than "up" will be reported as failed. We expect 2 NICs with "up" status in our bond.
 
 
 def get_bond():
     try:
-        path="/proc/net/bonding/"
-        bondList=os.listdir(path)
+        path = "/proc/net/bonding/"
+        bondList = os.listdir(path)
         return bondList
-    except:
+    except Exception:
         return
+
 
 def check_bond_status(strBondName):
     try:
@@ -22,26 +23,26 @@ def check_bond_status(strBondName):
                 strState = line.split(":")
                 strState = strState[1].strip()
                 if strState != "up":
-                    #bond nok
+                    # bond nok
                     intState = 1
                     bondStatus['intState'] = intState
                     bondStatus['strState'] = strState
-                    #we stop at first error
+                    # we stop at first error
                     return bondStatus
                 else:
-                    #bond ok
+                    # bond ok
                     n = n + 1
                     intState = 0
                     bondStatus['intState'] = intState
                     bondStatus['strState'] = strState
-        #we expect to find 3 "up" in our typical bond, trigg error if not            
+        # we expect to find 3 "up" in our typical bond, trigg error if not
         if n != 3:
             intState = 1
             strState = "One NIC is missing in bond"
             bondStatus['intState'] = intState
             bondStatus['strState'] = strState
         return bondStatus
-    except:
+    except Exception:
         return
 
 try:
@@ -63,7 +64,6 @@ try:
                 collectd.info('%s: %s' % (NAME, msg))
         else:
             collectd.notice('%s: %s' % (NAME, msg))
-   
 
     def read_callback():
         bondList = get_bond()
@@ -72,20 +72,20 @@ try:
                 bond_status = check_bond_status(bond)
                 val = collectd.Values(plugin=NAME, type="gauge")
                 if bond_status:
-                    val.values = [bond_status['intState'] ]
-                    logger('verb', "Bond %s status is: %s" % (bond,bond_status['intState']))
+                    val.values = [bond_status['intState']]
+                    logger('verb', "Bond %s status is: %s" % (bond, bond_status['intState']))
                     val.type_instance = "%s" % bond
                     val.type = "gauge"
                     val.dispatch()
         else:
             logger('verb', "no bond found")
 
-    collectd.register_read(read_callback) 
+    collectd.register_read(read_callback)
 
 
 except ImportError:
-    ## we're not running inside collectd
-    ## it's ok
+    # we're not running inside collectd
+    # it's ok
     import os
 
     bondList = get_bond()
@@ -96,6 +96,6 @@ except ImportError:
                 if bond_status['intState'] == 0:
                     print "Bond %s is up" % bond
                 else:
-                    print "Bond %s error:%s" % (bond,bond_status['strState'])
+                    print "Bond %s error:%s" % (bond, bond_status['strState'])
     else:
         print "no bond found"
