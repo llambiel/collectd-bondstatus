@@ -94,8 +94,8 @@ except ImportError:
             bond_status = check_bond_status(bond)
             if bond_status:
                 if bond_status['intState'] == 0:
-                    print "Bond %s is up" % bond
+                    print("Bond %s is up" % bond)
                 else:
-                    print "Bond %s error:%s" % (bond, bond_status['strState'])
+                    print("Bond %s error:%s" % (bond, bond_status['strState']))
     else:
-        print "no bond found"
+        print("no bond found")
